@@ -4,7 +4,7 @@ const userModel = require("../models/userModel");
 const protectRoute = function (request, response, next) {
     const token = request.headers.authorization;
     if (!token) {
-        return response.status(401).json({
+        return response.json({
             message : "user unauthorized"
         });
     }
@@ -12,15 +12,17 @@ const protectRoute = function (request, response, next) {
     //check token
     jwt.verify(token, process.env.TOKEN_KEY, async (error, decoded)=>{
         if (error) {
-            return response.status(401).json({
-                message : "token invalid",
+            return response.json({
+                message : "invalid token, user unauthorized",
+                error
             });
+        } else {
+            console.log(decoded);
+            const user = await userModel.findById(decoded.id);
+            console.log(user);
+            request.user = user;
+            next();
         }
-        console.log(decoded);
-        const user = await userModel.findById(decoded.id);
-        console.log(user);
-        request.user = user;
-        next();
     })
 };
 

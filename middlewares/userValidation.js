@@ -5,7 +5,7 @@ const {
 
 
 const registerValidationMiddleware = (request, response, next)=>{
-    const {error} = validationRegisterSchema.validate(request.body);
+    const {error} = validationRegisterSchema.validate(request.body, {abortEarly: false});
 
     if(error) {
         const errorList = error.details.map(detail => (
@@ -15,7 +15,7 @@ const registerValidationMiddleware = (request, response, next)=>{
             }
         ));
         console.log(errorList);
-        return response.json({error: errorList});
+        return response.json({error: true, errorList: errorList});
 
     } else {
         console.log("not error occured");
@@ -24,9 +24,9 @@ const registerValidationMiddleware = (request, response, next)=>{
 };
 
 const loginValidationMiddleware = (request, response, next)=>{
-    const {error} = validationLoginSchema.validate(request.body);
+    const {error} = validationLoginSchema.validate(request.body, {abortEarly: false});
     if(error) {
-
+        
         const errorList = error.details.map(detail => (
             {
                 message: detail.message,
@@ -35,7 +35,7 @@ const loginValidationMiddleware = (request, response, next)=>{
         ));
 
         console.log(errorList);
-        return response.json({error: errorList});
+        return response.json({error:true, errorList: errorList});
 
     } else {
         console.log("no error occured");

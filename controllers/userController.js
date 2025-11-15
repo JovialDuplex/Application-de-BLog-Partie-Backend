@@ -11,7 +11,7 @@ const registerUser = async function(request, response) {
 
     // check if user exist
     if (userExists) {
-        response.status(400).send({message: "User already exists"});
+        response.json({message: "User already exists"});
         throw new Error("User already exists");
     }
 
@@ -29,7 +29,7 @@ const registerUser = async function(request, response) {
         });
         // check if user was created
         if (user) {
-            const token = jwt.sign({id: user._id}, process.env.TOKEN_KEY, {expiresIn: "1h"});
+            const token = jwt.sign({id: user._id}, process.env.TOKEN_KEY, {expiresIn: "3d"});
 
             response.status(200).send({
                 message: "user creating successfully",
@@ -38,7 +38,7 @@ const registerUser = async function(request, response) {
             });
 
         } else {
-            response.status(400).send({message: "creating user failed"});
+            response.json({message: "creating user failed"});
         }
     }
 };
@@ -52,9 +52,10 @@ const loginUser = async function(request, response) {
         // check password
         const checkPassword = await bcrypt.compare(user_password, user.user_password);
         if(checkPassword) {
-            const token = jwt.sign({id: user._id}, process.env.TOKEN_KEY, {expiresIn: "1h"});
+            const token = jwt.sign({id: user._id}, process.env.TOKEN_KEY, {expiresIn: "3d"});
+            console.log("user login successful");
 
-            response.status(200).json({
+            response.json({
                 message: "user login successful",
                 user,
                 token: token,
@@ -62,20 +63,30 @@ const loginUser = async function(request, response) {
 
         } else {
             console.log("user password is incorrect");
-            response.status(400).json({message: "your email or password is incorrect"});
+            response.json({errorValid: true, message: "your email or password is incorrect"});
         }
 
     } else {
         console.log("user email is incorrect");
-        response.status(400).send({message: "your email or password is incorrect"});
+        response.json({errorValid: true, message: "your email or password is incorrect"});
     }
 };
 
-const logOutUser = function(request, response) {
-    response.json({"message": "user logged out"});
-}
+
+const getUser = async function(request, response) {
+    const userId = request.params.userId;
+    const user = await userModel.findById(userId);
+
+    if(user) {
+        response.json({status: "okay", user});
+    } else {
+        response.json({status: "error", message: "this user does not exist"});
+    }
+};
+
 module.exports = {
     registerUser,
     logOutUser,
     loginUser,
+    getUser,
 };
