@@ -86,7 +86,6 @@ const getUser = async function(request, response) {
 
 module.exports = {
     registerUser,
-    logOutUser,
     loginUser,
     getUser,
 };

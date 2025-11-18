@@ -17,9 +17,7 @@ const protectRoute = function (request, response, next) {
                 error
             });
         } else {
-            console.log(decoded);
             const user = await userModel.findById(decoded.id);
-            console.log(user);
             request.user = user;
             next();
         }
