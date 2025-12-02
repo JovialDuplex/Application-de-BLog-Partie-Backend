@@ -4,10 +4,10 @@ const fs = require("fs");
 const addArticleMiddleware = (request, response, next)=>{
     const {error} = articleValidationSchema.validate({
         ...request.body,
-        article_image: {
+        article_image: request.file ? {
             mimetype: request.file.mimetype,
             size: request.file.size,
-        }
+        } : null
     }, {abortEarly: false});
 
     if(error){
@@ -26,7 +26,10 @@ const addArticleMiddleware = (request, response, next)=>{
             });
         }
 
-        response.json({details});
+        response.json({
+            status: "error",
+            details,
+        });
     }
 
     else {

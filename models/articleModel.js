@@ -25,6 +25,18 @@ const articleSchema = mongoose.Schema({
         required: true,
     },
 
+    article_category: {
+        type: mongooseType.ObjectId,
+        required: true,
+        ref: "Category",
+    },
+
+    article_author: {
+        type: mongooseType.ObjectId,
+        required: true,
+        ref: "User",
+    },
+
     article_dateCreation : {
         type: Date,
         default: Date.now,

@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 router.post("/login", userMiddleware.loginValidationMiddleware,userController.loginUser);
 router.post("/register", userMiddleware.registerValidationMiddleware, userController.registerUser);
 router.get("/get-user/:userId", protectRoute, userController.getUser);
+
 router.post("/check-token", async (request, response)=>{
     const {token} = request.body;
     if(token) {

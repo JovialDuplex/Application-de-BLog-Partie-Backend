@@ -14,7 +14,13 @@ const userSchema = mongoose.Schema({
     user_password: {
         type: mongooseType.String,
         required: true,
-    }
+    },
+    user_categories: [
+        {
+            type: mongooseType.ObjectId,
+            ref: "Category",
+        }
+    ]
 });
 
 // export model

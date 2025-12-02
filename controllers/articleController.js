@@ -1,15 +1,31 @@
 const articleModel = require("../models/articleModel");
+const categoryModel = require("../models/categoryModel");
+
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
+const jwt = require("jsonwebtoken");
 
 const addArticle = async (request, response) => {
     try{
+        const token = request.headers.authorization.split(" ")[1];
+        let userId;
+        jwt.verify(token, process.env.TOKEN_KEY, {}, (error, decoded)=>{
+            if(error) {
+                console.log(error);
+                return response.json({status: "error", error});
+            } else {
+                userId = decoded.id;
+            }
+        });
+
         const myArticle = await articleModel.create({
             article_title: request.body.article_title,
             article_description: request.body.article_description,
             article_content: request.body.article_content,
             article_image: request.file ? "/uploads/" + request.file.filename : "",
+            article_category: request.body.article_category,
+            article_author: userId,
         });
         console.log("article created successfully");
         response.json({
@@ -31,7 +47,7 @@ const addArticle = async (request, response) => {
 const showArticle = async (request, response) => {
   const articleId = request.params.articleId;
 
-  const article = await articleModel.findById(articleId);
+  const article = await articleModel.findById(articleId).populate("article_author").populate("article_category");
   if (!article) {
       response.json({
           status: "error",
@@ -111,8 +127,9 @@ const updateArticle = async (request, response) => {
 
 
 }
+
 const showAll = async (request, response) => {
-    const articles = await articleModel.find({});
+    const articles = await articleModel.find({}).populate("article_author").populate("article_category");
     response.json({articles});
 }
 

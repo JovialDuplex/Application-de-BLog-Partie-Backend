@@ -12,6 +12,10 @@ const articleValidationSchema = joi.object({
     article_content: joi.string().required().messages({
         "string.empty": "Article Content is required",
     }),
+    article_category: joi.string().required().messages({
+        "string.empty": "Article Category is required",
+    }),
+
     article_image: joi.object({
         size: joi.number().max(5*1024*1024).messages({
             "number.max": "the image size must not exceed 5Mo",

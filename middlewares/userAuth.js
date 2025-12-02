@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken");
 const userModel = require("../models/userModel");
 
 const protectRoute = function (request, response, next) {
-    const token = request.headers.authorization;
+    console.log(request.headers.authorization);
+    const token = request.headers.authorization.split(" ")[1];
     if (!token) {
         return response.json({
             message : "user unauthorized"
@@ -19,6 +20,7 @@ const protectRoute = function (request, response, next) {
         } else {
             const user = await userModel.findById(decoded.id);
             request.user = user;
+            console.log(user);
             next();
         }
     })
