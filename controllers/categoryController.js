@@ -1,5 +1,6 @@
 const categoryModel = require("../models/categoryModel");
 const userModel = require("../models/userModel");
+const articleModel = require("../models/articleModel");
 
 const jwt = require("jsonwebtoken");
 
@@ -55,9 +56,10 @@ const deleteCategory = async (request, response)=>{
     const {categoryId} = request.params;
     try{
         await categoryModel.findByIdAndDelete(categoryId);
+        await articleModel.deleteMany({article_category: categoryId});
         response.json({
             status: "success",
-            message: "Category deleted successfully",
+            message: "Category with articles have been deleted successfully",
         });
 
     } catch(error){

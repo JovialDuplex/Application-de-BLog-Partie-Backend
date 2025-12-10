@@ -129,8 +129,20 @@ const updateArticle = async (request, response) => {
 }
 
 const showAll = async (request, response) => {
-    const articles = await articleModel.find({}).populate("article_author").populate("article_category");
-    response.json({articles});
+    const {category, author} = request.query;
+    if(category){
+        const articles = await articleModel.find({article_category : category}).populate("article_author").populate("article_category");
+        response.json({articles});
+
+    } else if(author) {
+        const articles = await articleModel.find({article_author : author}).populate("article_author").populate("article_category");
+        response.json({articles})
+    }
+
+    else {
+        const articles = await articleModel.find({}).populate("article_author").populate("article_category");
+        response.json({articles});
+    }
 }
 
 const getUpdateArticle = async (request, response)=>{
@@ -150,6 +162,15 @@ const getUpdateArticle = async (request, response)=>{
     }
 }
 
+const getArticleByCategory = async (request, response)=>{
+    console.log(request.query);
+    console.log(request.params);
+
+    response.json({
+        message : "okay"
+    });
+};
+
 module.exports = {
     showAll,
     addArticle,
@@ -157,4 +178,5 @@ module.exports = {
     deleteArticle,
     updateArticle,
     getUpdateArticle,
+    getArticleByCategory,
 }

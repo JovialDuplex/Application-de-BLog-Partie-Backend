@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const {showArticle, addArticle, deleteArticle, updateArticle, showAll, getUpdateArticle} = require("../controllers/articleController");
+const {showArticle, addArticle, deleteArticle, updateArticle, showAll, getUpdateArticle, getArticleByCategory} = require("../controllers/articleController");
 const {protectRoute} = require("../middlewares/userAuth");
 const multer = require("multer");
 const {addArticleMiddleware} = require("../middlewares/articleValidation");
@@ -18,6 +18,7 @@ const upload = multer({
 });
 
 router.get("/", showAll);
+// router.get("/show?categoryId=:categoryId", showArticle);
 router.get("/show/:articleId", showArticle);
 router.get("/update/:articleId", protectRoute, getUpdateArticle);
 router.post("/add", protectRoute, upload.single("article_image"), addArticleMiddleware, addArticle);
